@@ -1,0 +1,25 @@
+Package: NLCUB
+Type: Package
+Title: Estimation of NonLinear CUB models
+Version: 0.1.0
+Author: Paola Zuccolotto [aut] (<https://orcid.org/0000-0003-4399-7018>), 
+ Marica Manisera [aut] (<https://orcid.org/0000-0002-2982-0243>),
+ Marco Sandri [aut, cre] (<https://orcid.org/0000-0002-1422-5695>)
+Maintainer: Marco Sandri <nlcub.help@unibs.it>
+Description: Estimation and simulation of NonLinear CUB models 
+             P. Zuccolotto and M. Manisera (2020) Basketball Data Science. Applications with R. CRC Press. ISBN 9781138600799.
+License: GPL (>= 2.0)
+Encoding: UTF-8
+LazyData: true
+URL: https://bdsports.unibs.it/basketballanalyzer/, https://github.com/sndmrc/BasketballAnalyzeR/
+BugReports: https://github.com/sndmrc/BasketballAnalyzeR/issues
+Contact: <nlcub.help@unibs.it>
+Depends:
+    R (>= 4.0)
+Imports:
+    maxLik (>= 1.4), 
+    stats,
+    grDevices,
+    graphics
+RoxygenNote: 7.1.1
+Roxygen: list(markdown = TRUE)
