@@ -7,7 +7,7 @@
 #' @param gsim vector of the 'latent' categories assigned to each rating point
 #' @details It is necessary that the name of the team is contained in the column corresponding to the description
 #' @return  A data frame with N ratings simulated according to a NLCUB model with parameters \code{paisim}, \code{csisim}, \code{gsim}
-#' @references M. Manisera and P.Zuccolotto (2014) Modeling rating data with Nonlinear CUB models. Computational Statistics and Data Analysis, 78, pp. 100–118
+#' @references M. Manisera and P.Zuccolotto (2014) Computational Statistics and Data Analysis, 78, pp. 100–118
 #' @references M. Manisera and P.Zuccolotto (2014) Nonlinear CUB models: The R code. Statistical Software - Statistica & Applicazioni, Vol. XII, n. 2, pp. 205-223
 #' @examples
 #' N <- 1000
