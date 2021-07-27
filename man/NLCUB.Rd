@@ -39,7 +39,7 @@ NLCUB(
 A list with the following estimates:
 
 \itemize{
-\item parameter estimates (pai xi g)
+\item parameter estimates (pai, xi, and g)
 }
 
 \itemize{
@@ -83,9 +83,9 @@ datitab <- as.matrix(table(dataNLCUB))
 est <- NLCUB(datitab, g=g.sim, freq.table=TRUE)
 }
 \references{
-M. Manisera and P.Zuccolotto (2014) Modeling rating data with Nonlinear CUB models. Computational Statistics and Data Analysis, 78, pp. 100–118
+M. Manisera and P. Zuccolotto (2014) Modeling rating data with Nonlinear CUB models. Computational Statistics and Data Analysis, 78, pp. 100–118
 
-M. Manisera and P.Zuccolotto (2014) Nonlinear CUB models: The R code. Statistical Software - Statistica & Applicazioni, Vol. XII, n. 2, pp. 205-223
+M. Manisera and P. Zuccolotto (2014) Nonlinear CUB models: The R code. Statistical Software - Statistica & Applicazioni, Vol. XII, n. 2, pp. 205-223
 }
 \author{
 Paola Zuccolotto, Marica Manisera, Sandri Marco

@@ -11,7 +11,7 @@
 #' @param draw.plot	logical, if TRUE, graphs are plotted (default=TRUE)
 #' @param dk  numeric, proportion of 'don't know' responses; if declared, in addition to the estimate of pai, the estimated of pai adjusted for the presence of dk responses is provided
 #' @return  A list with the following estimates:
-#' @return * parameter estimates (pai xi g)
+#' @return * parameter estimates (pai, xi, and g)
 #' @return * fitted frequencies
 #' @return * diss index
 #' @return * average transition probabilities
@@ -19,8 +19,8 @@
 #' @return * unconditional transition probability
 #' @return * expected number of one-rating-point increments
 #' @return The command can also display two graphs: observed vs fitted frequencies + transition plot
-#' @references M. Manisera and P.Zuccolotto (2014) Modeling rating data with Nonlinear CUB models. Computational Statistics and Data Analysis, 78, pp. 100–118
-#' @references M. Manisera and P.Zuccolotto (2014) Nonlinear CUB models: The R code. Statistical Software - Statistica & Applicazioni, Vol. XII, n. 2, pp. 205-223
+#' @references M. Manisera and P. Zuccolotto (2014) Modeling rating data with Nonlinear CUB models. Computational Statistics and Data Analysis, 78, pp. 100–118
+#' @references M. Manisera and P. Zuccolotto (2014) Nonlinear CUB models: The R code. Statistical Software - Statistica & Applicazioni, Vol. XII, n. 2, pp. 205-223
 #' @examples
 #' N <- 1000
 #' pai.sim <- 0.8
@@ -49,10 +49,10 @@ NLCUB <- function(r, g=NULL, m=NULL, maxT=NULL, param0=c(0.5,0.5), freq.table=TR
 
   if (!is.null(g)) {
     if (!is.null(m)) {
-      print("Warning - parameter m: unused argument")
+      warning("Parameter m: unused argument")
     }
     if (!is.null(maxT)) {
-      print("Warning - parameter maxT: unused argument")
+      warning("Parameter maxT: unused argument")
     }
     g.est <- g
   }
@@ -60,7 +60,7 @@ NLCUB <- function(r, g=NULL, m=NULL, maxT=NULL, param0=c(0.5,0.5), freq.table=TR
 
   if (is.null(m)) {
     if (is.null(g)) {
-      print("ERROR - please, specify m")
+      stop("Please, specify m")
     } else {
       m <- length(g)
     }
@@ -72,7 +72,7 @@ NLCUB <- function(r, g=NULL, m=NULL, maxT=NULL, param0=c(0.5,0.5), freq.table=TR
 
 
   if (maxT<=(m-1)) {
-    print("Please, specify maxT > m-1")
+    stop("Please, specify maxT > m-1")
   }
 
   if (!freq.table) {
@@ -134,9 +134,7 @@ NLCUB <- function(r, g=NULL, m=NULL, maxT=NULL, param0=c(0.5,0.5), freq.table=TR
   ################################# ESTIMATION
   if (method=="NM") {
     est <- MaxLikNLCUB.fix.g(tabrf=tabr, gf=g.est, param0f=param0)
-  }
-
-  if (method=="EM") {
+  } else if (method=="EM") {
     est <- EM.NLCUB.fix.g(tabrEM=tabr, gEM=g.est, param0EM=param0, tolerEM=0.000001, maxiterEM=500)
   }
 
@@ -161,9 +159,7 @@ NLCUB <- function(r, g=NULL, m=NULL, maxT=NULL, param0=c(0.5,0.5), freq.table=TR
                 "transprob_mat"=probs$transition_probability_matrix,
                 "uncondtransprob"=probs$unconditioned_transition_probability,
                 "mu"=probs$expected_number_one.rating.point_increments,"NL_index"=NL,"pai_adjusted_for_dk"=pai.adj)
-  }
-
-  if (method=="EM"){
+  } else if (method=="EM") {
     out <- list(est,"pai"=est$estimate[1],"csi"=est$estimate[2],"g"=as.vector(g.est),"Fit"=frt,"diss"=dissind,
                 "transprob"=probs$transition_probabilities,
                 "transprob_mat"=probs$transition_probability_matrix,
