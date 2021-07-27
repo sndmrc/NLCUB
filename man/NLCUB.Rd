@@ -2,30 +2,30 @@
 % Please edit documentation in R/NLCUB.R
 \name{NLCUB}
 \alias{NLCUB}
-\title{Estimate NLCUB models}
+\title{Fitting NLCUB models}
 \usage{
 NLCUB(
   r,
-  g = c(),
-  m = c(),
-  maxT = c(),
+  g = NULL,
+  m = NULL,
+  maxT = NULL,
   param0 = c(0.5, 0.5),
   freq.table = TRUE,
   method = "EM",
   draw.plot = TRUE,
-  dk = c()
+  dk = NULL
 )
 }
 \arguments{
-\item{r}{observed ratings (either the vector of microdata or the vector of the m observed frequencies (frequency table)}
+\item{r}{numeric, observed ratings (either the vector of microdata or the vector of the m observed frequencies (frequency table)}
 
-\item{g}{vector of the 'latent' categories assigned to each rating point; if g is declared, pai and xi are estimated for fixed g;if g is not declared, model selection is performed (see method) in order to determine optimal g}
+\item{g}{numeric vector, 'latent' categories assigned to each rating point; if \code{g} is declared, pai and xi are estimated for fixed g;if g is not declared, model selection is performed (see method) in order to determine optimal g}
 
-\item{m}{no. of categories of the response scale    (active only when g is not declared)}
+\item{m}{integer, number of categories of the response scale    (active only when \code{g} is not declared)}
 
-\item{maxT}{maximum value for T (must be maxT> m-1, default=2m-1); active only when g is not declared}
+\item{maxT}{numeric, maximum value for T (must be maxT > m-1, default = 2m-1); active only when \code{g} is not declared}
 
-\item{param0}{starting values for pai and xi (default: c(0.5,0.5))}
+\item{param0}{numeric, starting values for pai and xi (default: c(0.5,0.5))}
 
 \item{freq.table}{logical, if TRUE, the data in r is the vector of the m observed frequencies (frequency table) (default=TRUE)}
 
@@ -33,7 +33,7 @@ NLCUB(
 
 \item{draw.plot}{logical, if TRUE, graphs are plotted (default=TRUE)}
 
-\item{dk}{proportion of 'don't know' responses; if declared, in addition to the estimate of pai, the estimated of pai adjusted for the presence of dk responses is provided}
+\item{dk}{numeric, proportion of 'don't know' responses; if declared, in addition to the estimate of pai, the estimated of pai adjusted for the presence of dk responses is provided}
 }
 \value{
 A list with the following estimates:
@@ -69,7 +69,7 @@ A list with the following estimates:
 The command can also displays two graphs: observed vs fitted frequencies + transition plot
 }
 \description{
-Estimate NLCUB models
+Fitting NLCUB models
 }
 \examples{
 N <- 1000
@@ -78,9 +78,9 @@ xi.sim <- 0.3
 g.sim <- c(1,1,2,4,2)
 cats <- 5
 set.seed(1234567)
-dataNLCUB <- simNLCUB(N,pai.sim, xi.sim, g.sim)
+dataNLCUB <- simNLCUB(N, pai.sim, xi.sim, g.sim)
 datitab <- as.matrix(table(dataNLCUB))
-est <- NLCUB(datitab,g=g.sim,freq.table=TRUE)
+est <- NLCUB(datitab, g=g.sim, freq.table=TRUE)
 }
 \references{
 M. Manisera and P.Zuccolotto (2014) Modeling rating data with Nonlinear CUB models. Computational Statistics and Data Analysis, 78, pp. 100–118

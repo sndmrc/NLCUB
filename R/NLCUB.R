@@ -1,15 +1,15 @@
-#' Estimate NLCUB models
+#' Fitting NLCUB models
 #'
 #' @author Paola Zuccolotto, Marica Manisera, Sandri Marco
-#' @param r observed ratings (either the vector of microdata or the vector of the m observed frequencies (frequency table)
-#' @param g	vector of the 'latent' categories assigned to each rating point; if g is declared, pai and xi are estimated for fixed g;if g is not declared, model selection is performed (see method) in order to determine optimal g
-#' @param m no. of categories of the response scale	(active only when g is not declared)
-#' @param maxT maximum value for T (must be maxT> m-1, default=2m-1); active only when g is not declared
-#' @param param0 	starting values for pai and xi (default: c(0.5,0.5))
+#' @param r numeric, observed ratings (either the vector of microdata or the vector of the m observed frequencies (frequency table)
+#' @param g	numeric vector, 'latent' categories assigned to each rating point; if \code{g} is declared, pai and xi are estimated for fixed g;if g is not declared, model selection is performed (see method) in order to determine optimal g
+#' @param m integer, number of categories of the response scale	(active only when \code{g} is not declared)
+#' @param maxT numeric, maximum value for T (must be maxT > m-1, default = 2m-1); active only when \code{g} is not declared
+#' @param param0 	numeric, starting values for pai and xi (default: c(0.5,0.5))
 #' @param freq.table	logical, if TRUE, the data in r is the vector of the m observed frequencies (frequency table) (default=TRUE)
 #' @param method  character, "NM" (likelihood based - Melder-Mead maximization) - "EM" (likelihood based - EM algorithm)
 #' @param draw.plot	logical, if TRUE, graphs are plotted (default=TRUE)
-#' @param dk  proportion of 'don't know' responses; if declared, in addition to the estimate of pai, the estimated of pai adjusted for the presence of dk responses is provided
+#' @param dk  numeric, proportion of 'don't know' responses; if declared, in addition to the estimate of pai, the estimated of pai adjusted for the presence of dk responses is provided
 #' @return  A list with the following estimates:
 #' @return * parameter estimates (pai xi g)
 #' @return * fitted frequencies
@@ -28,9 +28,9 @@
 #' g.sim <- c(1,1,2,4,2)
 #' cats <- 5
 #' set.seed(1234567)
-#' dataNLCUB <- simNLCUB(N,pai.sim, xi.sim, g.sim)
+#' dataNLCUB <- simNLCUB(N, pai.sim, xi.sim, g.sim)
 #' datitab <- as.matrix(table(dataNLCUB))
-#' est <- NLCUB(datitab,g=g.sim,freq.table=TRUE)
+#' est <- NLCUB(datitab, g=g.sim, freq.table=TRUE)
 #' @export
 #' @importFrom  maxLik maxLik
 #' @importFrom  stats weighted.mean
@@ -45,8 +45,7 @@
 #' @importFrom  graphics lines
 #' @importFrom  graphics par
 
-
-NLCUB <- function(r, g=c(), m=c(), maxT=c(), param0=c(0.5,0.5), freq.table=TRUE, method="EM", draw.plot=TRUE, dk=c()) {
+NLCUB <- function(r, g=NULL, m=NULL, maxT=NULL, param0=c(0.5,0.5), freq.table=TRUE, method="EM", draw.plot=TRUE, dk=NULL) {
 
   if (!is.null(g)) {
     if (!is.null(m)) {
@@ -76,7 +75,7 @@ NLCUB <- function(r, g=c(), m=c(), maxT=c(), param0=c(0.5,0.5), freq.table=TRUE,
     print("Please, specify maxT > m-1")
   }
 
-  if (freq.table==FALSE) {
+  if (!freq.table) {
     tabr<-as.matrix(table(r))
     if(length(tabr) < m) {
       rr <- matrix(0,m,1)
@@ -89,7 +88,7 @@ NLCUB <- function(r, g=c(), m=c(), maxT=c(), param0=c(0.5,0.5), freq.table=TRUE,
 
 
   ################################# METHOD NM
-  if (method=="NM" & is.null(g)==TRUE){
+  if (method=="NM" & is.null(g)){
 
     c <- maxT-m+2
     comb<- expand.grid(rep(list(1:c),m))
@@ -113,7 +112,7 @@ NLCUB <- function(r, g=c(), m=c(), maxT=c(), param0=c(0.5,0.5), freq.table=TRUE,
   }#end method NM
 
   ################################# METHOD EM
-  if (method=="EM" & is.null(g)==TRUE) {
+  if (method=="EM" & is.null(g)) {
 
     c <- maxT-m+2
     comb<- expand.grid(rep(list(1:c),m))
@@ -134,19 +133,18 @@ NLCUB <- function(r, g=c(), m=c(), maxT=c(), param0=c(0.5,0.5), freq.table=TRUE,
 
   ################################# ESTIMATION
   if (method=="NM") {
-    est <- MaxLikNLCUB.fix.g(tabrf=tabr,gf=g.est,param0f=param0)
+    est <- MaxLikNLCUB.fix.g(tabrf=tabr, gf=g.est, param0f=param0)
   }
 
   if (method=="EM") {
-    est <- EM.NLCUB.fix.g(tabrEM=tabr,gEM=g.est,param0EM=param0,tolerEM=0.000001,maxiterEM=500)
+    est <- EM.NLCUB.fix.g(tabrEM=tabr, gEM=g.est, param0EM=param0, tolerEM=0.000001, maxiterEM=500)
   }
 
-  if (draw.plot==TRUE) {
+  if (draw.plot) {
     par(mfrow=c(1,2))
     NLCUBplot(rp1=tabr,paip1=est$estimate[1],xip1=est$estimate[2],gp1=g.est,freq.table.p1=TRUE)
-    transplot(xip2=est$estimate[2],gp2=g.est,log.scale=TRUE)
+    transplot(xip2=est$estimate[2], gp2=g.est, log.scale=TRUE)
   }
-
 
   frt <- thfr(pait=est$estimate[1], xit=est$estimate[2], gt=g.est)$Fit
   dissind <- dissNLCUB(rd=tabr, paid=est$estimate[1], xid=est$estimate[2], gd=g.est)
@@ -157,7 +155,6 @@ NLCUB <- function(r, g=c(), m=c(), maxT=c(), param0=c(0.5,0.5), freq.table=TRUE,
 
   if (is.null(dk)) {pai.adj <- "Parameter pai has not been adjusted for dk responses"}
 
-
   if (method=="NM") {
     out <- list(est,"pai"=est$estimate[1],"csi"=est$estimate[2],"Varmat"=solve(-est$hessian),"Infmat"=(-est$hessian)/sum(tabr),"g"=as.vector(g.est),"Fit"=frt,"diss"=dissind,
                 "transprob"=probs$transition_probabilities,
@@ -166,7 +163,6 @@ NLCUB <- function(r, g=c(), m=c(), maxT=c(), param0=c(0.5,0.5), freq.table=TRUE,
                 "mu"=probs$expected_number_one.rating.point_increments,"NL_index"=NL,"pai_adjusted_for_dk"=pai.adj)
   }
 
-
   if (method=="EM"){
     out <- list(est,"pai"=est$estimate[1],"csi"=est$estimate[2],"g"=as.vector(g.est),"Fit"=frt,"diss"=dissind,
                 "transprob"=probs$transition_probabilities,
@@ -174,8 +170,7 @@ NLCUB <- function(r, g=c(), m=c(), maxT=c(), param0=c(0.5,0.5), freq.table=TRUE,
                 "uncondtransprob"=probs$unconditioned_transition_probability,
                 "mu"=probs$expected_number_one.rating.point_increments,"NL_index"=NL,"pai_adjusted_for_dk"=pai.adj)
   }
-
-  out
+  return(out)
 }
 
 

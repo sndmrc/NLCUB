@@ -2,7 +2,7 @@
 % Please edit documentation in R/simNLCUB.R
 \name{simNLCUB}
 \alias{simNLCUB}
-\title{Computes, for each action, an estimate of the value of the shotclock when the action has ended}
+\title{Simulate ratings according to a NLCUB model}
 \usage{
 simNLCUB(Nsim, paisim, xisim, gsim)
 }
@@ -13,13 +13,13 @@ simNLCUB(Nsim, paisim, xisim, gsim)
 
 \item{xisim}{numeric, value of the \code{csi} parameter to be used for simulation}
 
-\item{gsim}{vector of the 'latent' categories assigned to each rating point}
+\item{gsim}{numeric vector, the 'latent' categories assigned to each rating point}
 }
 \value{
 A data frame with N ratings simulated according to a NLCUB model with parameters \code{paisim}, \code{csisim}, \code{gsim}
 }
 \description{
-Computes, for each action, an estimate of the value of the shotclock when the action has ended
+Simulate ratings according to a NLCUB model
 }
 \details{
 It is necessary that the name of the team is contained in the column corresponding to the description
@@ -31,7 +31,7 @@ xi.sim <- 0.3
 g.sim <- c(1,1,2,4,2)
 cats <- 5
 set.seed(1234567)
-dataNLCUB <- simNLCUB(N,pai.sim, xi.sim, g.sim)
+dataNLCUB <- simNLCUB(N, pai.sim, xi.sim, g.sim)
 }
 \references{
 M. Manisera and P.Zuccolotto (2014) Modeling rating data with Nonlinear CUB models. Computational Statistics and Data Analysis, 78, pp. 100–118
