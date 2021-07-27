@@ -66,7 +66,7 @@ A list with the following estimates:
 \item expected number of one-rating-point increments
 }
 
-The command can also displays two graphs: observed vs fitted frequencies + transition plot
+The command can also display two graphs: observed vs fitted frequencies + transition plot
 }
 \description{
 Fitting NLCUB models

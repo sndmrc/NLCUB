@@ -18,7 +18,7 @@
 #' @return * transition probabilities matrix
 #' @return * unconditional transition probability
 #' @return * expected number of one-rating-point increments
-#' @return The command can also displays two graphs: observed vs fitted frequencies + transition plot
+#' @return The command can also display two graphs: observed vs fitted frequencies + transition plot
 #' @references M. Manisera and P.Zuccolotto (2014) Modeling rating data with Nonlinear CUB models. Computational Statistics and Data Analysis, 78, pp. 100–118
 #' @references M. Manisera and P.Zuccolotto (2014) Nonlinear CUB models: The R code. Statistical Software - Statistica & Applicazioni, Vol. XII, n. 2, pp. 205-223
 #' @examples
