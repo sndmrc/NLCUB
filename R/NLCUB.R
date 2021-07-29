@@ -8,7 +8,6 @@
 #' @param param0 	numeric, starting values for pai and xi (default: c(0.5,0.5))
 #' @param freq.table	logical, if TRUE, the data in r is the vector of the m observed frequencies (frequency table) (default=TRUE)
 #' @param method  character, "NM" (likelihood based - Melder-Mead maximization) - "EM" (likelihood based - EM algorithm)
-#' @param draw.plot	logical, if TRUE, graphs are plotted (default=TRUE)
 #' @param dk  numeric, proportion of 'don't know' responses; if declared, in addition to the estimate of pai, the estimated of pai adjusted for the presence of dk responses is provided
 #' @return  A list with the following estimates:
 #' @return * parameter estimates (pai, xi, and g)
@@ -45,7 +44,8 @@
 #' @importFrom  graphics lines
 #' @importFrom  graphics par
 
-NLCUB <- function(r, g=NULL, m=NULL, maxT=NULL, param0=c(0.5,0.5), freq.table=TRUE, method="EM", draw.plot=TRUE, dk=NULL) {
+NLCUB <- function(r, g=NULL, m=NULL, maxT=NULL, param0=c(0.5,0.5), 
+                  freq.table=TRUE, method="EM", dk=NULL) {
 
   if (!is.null(g)) {
     if (!is.null(m)) {
@@ -80,10 +80,10 @@ NLCUB <- function(r, g=NULL, m=NULL, maxT=NULL, param0=c(0.5,0.5), freq.table=TR
     if(length(tabr) < m) {
       rr <- matrix(0,m,1)
       rr[as.integer(row.names(tabr)),] <- tabr
-      tabr<-rr
+      tabr <- rr
     }
   } else {
-    tabr<-as.matrix(r)
+    tabr <- as.matrix(r)
   }
 
 
@@ -138,12 +138,6 @@ NLCUB <- function(r, g=NULL, m=NULL, maxT=NULL, param0=c(0.5,0.5), freq.table=TR
     est <- EM.NLCUB.fix.g(tabrEM=tabr, gEM=g.est, param0EM=param0, tolerEM=0.000001, maxiterEM=500)
   }
 
-  if (draw.plot) {
-    par(mfrow=c(1,2))
-    NLCUBplot(rp1=tabr,paip1=est$estimate[1],xip1=est$estimate[2],gp1=g.est,freq.table.p1=TRUE)
-    transplot(xip2=est$estimate[2], gp2=g.est, log.scale=TRUE)
-  }
-
   frt <- thfr(pait=est$estimate[1], xit=est$estimate[2], gt=g.est)$Fit
   dissind <- dissNLCUB(rd=tabr, paid=est$estimate[1], xid=est$estimate[2], gd=g.est)
   probs <- probtrans(xipr=est$estimate[2], gpr=g.est, print.matrix=TRUE)
@@ -154,18 +148,22 @@ NLCUB <- function(r, g=NULL, m=NULL, maxT=NULL, param0=c(0.5,0.5), freq.table=TR
   if (is.null(dk)) {pai.adj <- "Parameter pai has not been adjusted for dk responses"}
 
   if (method=="NM") {
-    out <- list(est,"pai"=est$estimate[1],"csi"=est$estimate[2],"Varmat"=solve(-est$hessian),"Infmat"=(-est$hessian)/sum(tabr),"g"=as.vector(g.est),"Fit"=frt,"diss"=dissind,
+    out <- list(est,"pai"=est$estimate[1],"csi"=est$estimate[2],"Varmat"=solve(-est$hessian),
+                "Infmat"=(-est$hessian)/sum(tabr),"g"=as.vector(g.est),"Fit"=frt,"diss"=dissind,
                 "transprob"=probs$transition_probabilities,
                 "transprob_mat"=probs$transition_probability_matrix,
                 "uncondtransprob"=probs$unconditioned_transition_probability,
-                "mu"=probs$expected_number_one.rating.point_increments,"NL_index"=NL,"pai_adjusted_for_dk"=pai.adj)
+                "mu"=probs$expected_number_one.rating.point_increments,"NL_index"=NL,
+                "pai_adjusted_for_dk"=pai.adj, tabr=tabr)
   } else if (method=="EM") {
     out <- list(est,"pai"=est$estimate[1],"csi"=est$estimate[2],"g"=as.vector(g.est),"Fit"=frt,"diss"=dissind,
-                "transprob"=probs$transition_probabilities,
+                "transprob"=probs$transition_probabilities, 
                 "transprob_mat"=probs$transition_probability_matrix,
                 "uncondtransprob"=probs$unconditioned_transition_probability,
-                "mu"=probs$expected_number_one.rating.point_increments,"NL_index"=NL,"pai_adjusted_for_dk"=pai.adj)
+                "mu"=probs$expected_number_one.rating.point_increments,"NL_index"=NL,
+                "pai_adjusted_for_dk"=pai.adj, tabr=tabr)
   }
+  class(out) <- append("NLCUB", class(out))
   return(out)
 }
 
@@ -343,24 +341,27 @@ dissNLCUB <- function(rd,paid,xid,gd,freq.table.diss=TRUE) {
 # freq.table.p1      = logical flag: if TRUE, the data in r is the vector of the m observed frequencies (frequency table)
 # output:
 # the observed vs. fitted frequencies plot
-NLCUBplot <- function(rp1,paip1,xip1,gp1,freq.table.p1=TRUE){
+NLCUBplot2 <- function(rp1,paip1,xip1,gp1,freq.table.p1=TRUE){
   m <- length(gp1)
-  if (freq.table.p1==FALSE){
-    tabr<-as.matrix(table(rp1))
-    if(length(tabr) < m){
-      rr<-matrix(0,m,1)
+  if (!freq.table.p1) {
+    tabr < -as.matrix(table(rp1))
+    if(length(tabr) < m) {
+      rr <- matrix(0,m,1)
       rr[as.integer(row.names(tabr)),]<-tabr
-      tabr<-rr
+      tabr <- rr
     }
-  }else{tabr<-as.matrix(rp1)}
+  } else {
+    tabr <- as.matrix(rp1)
+  }
 
+  par(mar=c(5.1, 5.1, 4.1, 1.1))
   plot(tabr/sum(tabr),axes=FALSE,main=paste("Diss = ",round(dissNLCUB(rd=tabr,paid=paip1,xid=xip1,gd=gp1),4),sep=""),
        xlab='Ratings',pch=16,cex.lab=0.8,
-       ylab='Observed relative frequencies (dots) and fitted probabilities (circles)',ylim=c(0,1))
+       ylab='Observed relative frequencies (dots) and\nfitted probabilities (circles)',ylim=c(0,1))
   box()
   axis(1,1:m)
   axis(2)
-  points(thfr(pait=paip1,xit=xip1,gt=gp1)$Fit,type='b',lty='dashed',cex=1.4)
+  points(thfr(pait=paip1,xit=xip1,gt=gp1)$Fit, type='b', lty='dashed', cex=1.4)
   abline(c(0,0),c(0,0))
 }
 
@@ -386,9 +387,8 @@ probtrans <- function(xipr,gpr,print.matrix=FALSE) {
 
   ######## probtrans from t=1 to t=last but one step
   ######## compute the probability of increase in the next step
-
-  for(i in 1:(n-1)){
-    for(r in 2:m){
+  for (i in 1:(n-1)) {
+    for (r in 2:m) {
       num <- dbinom(br[r],i,1-xipr)
       den <- sum(dbinom((br[r-1]+1):br[r],i,1-xipr))
       probtrans.i[i,r-1] <- (1-xipr)*num/den
@@ -410,11 +410,16 @@ probtrans <- function(xipr,gpr,print.matrix=FALSE) {
 
   mi <- prob.trans.unc*n #expected number of one-rating-point increments
 
-  if (print.matrix==TRUE){
-    return(list(transition_probability_matrix=probtrans.i,transition_probabilities=prob.trans,unconditioned_transition_probability=prob.trans.unc,expected_number_one.rating.point_increments=mi))
+  if (print.matrix) {
+    return(list(transition_probability_matrix=probtrans.i,
+                transition_probabilities=prob.trans,
+                unconditioned_transition_probability=prob.trans.unc,
+                expected_number_one.rating.point_increments=mi))
+  } else {
+    return(list(transition_probabilities=prob.trans,
+                unconditioned_transition_probability=prob.trans.unc,
+                expected_number_one.rating.point_increments=mi))
   }
-
-  return(list(transition_probabilities=prob.trans,unconditioned_transition_probability=prob.trans.unc,expected_number_one.rating.point_increments=mi))
 }
 
 
@@ -427,7 +432,7 @@ probtrans <- function(xipr,gpr,print.matrix=FALSE) {
 # log.scale	= logical flag: if TRUE, the logarithmic scale is used (if FALSE, the linear scale is used)
 # output:
 # the transition plot
-transplot <- function(xip2,gp2,log.scale=TRUE) {
+transplot2 <- function(xip2,gp2,log.scale=TRUE) {
   m <- length(gp2)
   prob.trans <- probtrans(xipr=xip2,gpr=gp2)$transition_probabilities
 
@@ -459,25 +464,5 @@ transplot <- function(xip2,gp2,log.scale=TRUE) {
 }
 
 
-#' @noRd
-#####################################################################
-# NL INDEX
-# inputs:
-# xip3	= value of the csi parameter
-# gp3		= vector of the 'latent' categories assigned to each rating point
-# output:
-# the NL index value
-NLI <- function(xip3,gp3) {
-  m <- length(gp3)
-  pt.matrix <- probtrans(xipr=xip3,gpr=gp3,print.matrix=TRUE)$transition_probability_matrix
-
-  card <- sum(is.finite(pt.matrix))
-  if (m %% 2 != 0) {max.NLI <- sqrt(1/4)} #odd (dispari)
-  if (m %% 2 == 0) {max.NLI <- sqrt( 1/4 - 1/(4* card^2))} #even (pari)
-
-  sigma <- sd(pt.matrix,na.rm=TRUE)*(card-1)/card
-  NLindex <- sigma/max.NLI
-  NLindex
-}
 
 

@@ -12,7 +12,6 @@ NLCUB(
   param0 = c(0.5, 0.5),
   freq.table = TRUE,
   method = "EM",
-  draw.plot = TRUE,
   dk = NULL
 )
 }
@@ -30,8 +29,6 @@ NLCUB(
 \item{freq.table}{logical, if TRUE, the data in r is the vector of the m observed frequencies (frequency table) (default=TRUE)}
 
 \item{method}{character, "NM" (likelihood based - Melder-Mead maximization) - "EM" (likelihood based - EM algorithm)}
-
-\item{draw.plot}{logical, if TRUE, graphs are plotted (default=TRUE)}
 
 \item{dk}{numeric, proportion of 'don't know' responses; if declared, in addition to the estimate of pai, the estimated of pai adjusted for the presence of dk responses is provided}
 }
