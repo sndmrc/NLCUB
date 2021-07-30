@@ -7,12 +7,12 @@ Author: Paola Zuccolotto [aut] (<https://orcid.org/0000-0003-4399-7018>),
  Marco Sandri [aut, cre] (<https://orcid.org/0000-0002-1422-5695>)
 Maintainer: Marco Sandri <nlcub.help@unibs.it>
 Description: Estimation and simulation of NonLinear CUB models 
-             P. Zuccolotto and M. Manisera (2020) Basketball Data Science. Applications with R. CRC Press. ISBN 9781138600799.
+             M. Manisera and P. Zuccolotto (2014).
 License: GPL (>= 2.0)
 Encoding: UTF-8
 LazyData: true
-URL: https://bdsports.unibs.it/basketballanalyzer/, https://github.com/sndmrc/BasketballAnalyzeR/
-BugReports: https://github.com/sndmrc/BasketballAnalyzeR/issues
+URL: https://github.com/sndmrc/NLCUB/
+BugReports: https://github.com/sndmrc/NLCUB/issues
 Contact: <nlcub.help@unibs.it>
 Depends:
     R (>= 4.0)
@@ -20,8 +20,11 @@ Imports:
     maxLik (>= 1.4), 
     ggplot2 (>= 3.3),
     gridExtra (>= 2.3),
+    mathjaxr,
     stats,
     grDevices,
     graphics
+RdMacros: mathjaxr    
 RoxygenNote: 7.1.1
 Roxygen: list(markdown = TRUE)
+

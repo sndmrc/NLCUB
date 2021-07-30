@@ -66,7 +66,10 @@ A list with the following estimates:
 The command can also display two graphs: observed vs fitted frequencies + transition plot
 }
 \description{
-Fitting NLCUB models
+Testo di descrizione \loadmathjax
+}
+\details{
+(Details here). Se serve possiamo inserire anche formule con Latex: \mjdeqn{\sum_{k=1}^{n}  {n \choose k} p^k (1-p)^{n-k}}{testo ascii}
 }
 \examples{
 N <- 1000
@@ -76,8 +79,9 @@ g.sim <- c(1,1,2,4,2)
 cats <- 5
 set.seed(1234567)
 dataNLCUB <- simNLCUB(N, pai.sim, xi.sim, g.sim)
-datitab <- as.matrix(table(dataNLCUB))
+datitab <- table(dataNLCUB)
 est <- NLCUB(datitab, g=g.sim, freq.table=TRUE)
+plot(est)
 }
 \references{
 M. Manisera and P. Zuccolotto (2014) Modeling rating data with Nonlinear CUB models. Computational Statistics and Data Analysis, 78, pp. 100–118

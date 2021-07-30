@@ -17,7 +17,7 @@
 #' cats <- 5
 #' set.seed(1234567)
 #' dataNLCUB <- simNLCUB(N, pai.sim, xi.sim, g.sim)
-#' datitab <- as.matrix(table(dataNLCUB))
+#' datitab <- table(dataNLCUB)
 #' est <- NLCUB(datitab, g=g.sim, freq.table=TRUE)
 #' plot(est)
 #' @method plot NLCUB

@@ -9,6 +9,7 @@
 #' @param freq.table	logical, if TRUE, the data in r is the vector of the m observed frequencies (frequency table) (default=TRUE)
 #' @param method  character, "NM" (likelihood based - Melder-Mead maximization) - "EM" (likelihood based - EM algorithm)
 #' @param dk  numeric, proportion of 'don't know' responses; if declared, in addition to the estimate of pai, the estimated of pai adjusted for the presence of dk responses is provided
+#' @details (Details here). Se serve possiamo inserire anche formule con Latex: \mjdeqn{\sum_{k=1}^{n}  {n \choose k} p^k (1-p)^{n-k}}{testo ascii}
 #' @return  A list with the following estimates:
 #' @return * parameter estimates (pai, xi, and g)
 #' @return * fitted frequencies
@@ -20,6 +21,7 @@
 #' @return The command can also display two graphs: observed vs fitted frequencies + transition plot
 #' @references M. Manisera and P. Zuccolotto (2014) Modeling rating data with Nonlinear CUB models. Computational Statistics and Data Analysis, 78, pp. 100–118
 #' @references M. Manisera and P. Zuccolotto (2014) Nonlinear CUB models: The R code. Statistical Software - Statistica & Applicazioni, Vol. XII, n. 2, pp. 205-223
+#' @description Testo di descrizione \loadmathjax
 #' @examples
 #' N <- 1000
 #' pai.sim <- 0.8
@@ -28,8 +30,9 @@
 #' cats <- 5
 #' set.seed(1234567)
 #' dataNLCUB <- simNLCUB(N, pai.sim, xi.sim, g.sim)
-#' datitab <- as.matrix(table(dataNLCUB))
+#' datitab <- table(dataNLCUB)
 #' est <- NLCUB(datitab, g=g.sim, freq.table=TRUE)
+#' plot(est)
 #' @export
 #' @importFrom  maxLik maxLik
 #' @importFrom  stats weighted.mean
@@ -149,18 +152,23 @@ NLCUB <- function(r, g=NULL, m=NULL, maxT=NULL, param0=c(0.5,0.5),
 
   if (method=="NM") {
     out <- list(est,"pai"=est$estimate[1],"csi"=est$estimate[2],"Varmat"=solve(-est$hessian),
-                "Infmat"=(-est$hessian)/sum(tabr),"g"=as.vector(g.est),"Fit"=frt,"diss"=dissind,
+                "Infmat"=(-est$hessian)/sum(tabr),"g"=as.vector(g.est),
+                "Fit"=frt,"diss"=dissind,
                 "transprob"=probs$transition_probabilities,
                 "transprob_mat"=probs$transition_probability_matrix,
                 "uncondtransprob"=probs$unconditioned_transition_probability,
-                "mu"=probs$expected_number_one.rating.point_increments,"NL_index"=NL,
+                "mu"=probs$expected_number_one.rating.point_increments,
+                "NL_index"=NL,
                 "pai_adjusted_for_dk"=pai.adj, tabr=tabr)
   } else if (method=="EM") {
-    out <- list(est,"pai"=est$estimate[1],"csi"=est$estimate[2],"g"=as.vector(g.est),"Fit"=frt,"diss"=dissind,
+    out <- list(est,"pai"=est$estimate[1],
+                "csi"=est$estimate[2],"g"=as.vector(g.est),
+                "Fit"=frt, "diss"=dissind,
                 "transprob"=probs$transition_probabilities, 
                 "transprob_mat"=probs$transition_probability_matrix,
                 "uncondtransprob"=probs$unconditioned_transition_probability,
-                "mu"=probs$expected_number_one.rating.point_increments,"NL_index"=NL,
+                "mu"=probs$expected_number_one.rating.point_increments,
+                "NL_index"=NL,
                 "pai_adjusted_for_dk"=pai.adj, tabr=tabr)
   }
   class(out) <- append("NLCUB", class(out))
