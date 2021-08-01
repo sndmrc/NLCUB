@@ -1,4 +1,3 @@
-# NLCUB
+<h3> NLCUB - Estimation of nonlinear CUB models</h3>
 
-<h2> NLCUB - Estimation of nonlinear CUB models</h2>
 
